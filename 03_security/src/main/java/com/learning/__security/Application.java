@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
@@ -40,31 +41,68 @@ public class Application {
 					.build();
 
 			// create roles
-			RoleEntity admin = RoleEntity.builder()
+			RoleEntity roleAdmin = RoleEntity.builder()
 					.roleEnum(RoleEnum.ADMIN)
 					.permissionList(Set.of(createPermission, readPermission, updatePermission, deletePermission))
 					.build();
 
-			RoleEntity user = RoleEntity.builder()
+			RoleEntity roleUser = RoleEntity.builder()
 					.roleEnum(RoleEnum.USER)
 					.permissionList(Set.of(createPermission, readPermission))
 					.build();
 
-			RoleEntity invited = RoleEntity.builder()
+			RoleEntity roleInvited = RoleEntity.builder()
 					.roleEnum(RoleEnum.INVITED)
 					.permissionList(Set.of(readPermission))
 					.build();
 
-			RoleEntity developer = RoleEntity.builder()
+			RoleEntity roleDeveloper = RoleEntity.builder()
 					.roleEnum(RoleEnum.DEVELOPER)
 					.permissionList(Set.of(createPermission, readPermission, updatePermission, deletePermission, refactorPermission))
 					.build();
 
 			// create users
-			UserEntity userAdmin = UserEntity.builder()
+			UserEntity userNico = UserEntity.builder()
+					.username("nico")
+					.password("1234")
+					.isEnabled(true)
 					.accountNoExpired(true)
-					.
+					.accountNoLocked(true)
+					.credentialNoExpired(true)
+					.roles(Set.of(roleAdmin))
 					.build();
+
+			UserEntity userIrene = UserEntity.builder()
+					.username("irene")
+					.password("1234")
+					.isEnabled(true)
+					.accountNoExpired(true)
+					.accountNoLocked(true)
+					.credentialNoExpired(true)
+					.roles(Set.of(roleDeveloper))
+					.build();
+
+			UserEntity userDaniel = UserEntity.builder()
+					.username("daneil")
+					.password("1234")
+					.isEnabled(true)
+					.accountNoExpired(true)
+					.accountNoLocked(true)
+					.credentialNoExpired(true)
+					.roles(Set.of(roleUser))
+					.build();
+
+			UserEntity userYisus = UserEntity.builder()
+					.username("yisus")
+					.password("1234")
+					.isEnabled(true)
+					.accountNoExpired(true)
+					.accountNoLocked(true)
+					.credentialNoExpired(true)
+					.roles(Set.of(roleInvited))
+					.build();
+
+			userRepository.saveAll(List.of(userNico, userYisus, userIrene, userDaniel));
 		};
 	}
 
