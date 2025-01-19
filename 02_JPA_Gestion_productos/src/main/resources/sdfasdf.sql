@@ -1,0 +1,2 @@
+--insert into products(id, name, price, stock) values (1, 'tenedor', 12.0, 5);
+--insert into products(id, name, price, stock) values (2, 'cuchara', 10.0, 10);

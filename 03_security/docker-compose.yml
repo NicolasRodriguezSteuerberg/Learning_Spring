@@ -1,0 +1,12 @@
+version: '3.9' # Versión de Docker Compose
+
+services:
+  postgres:
+    image: postgres:15 # Imagen oficial de PostgreSQL, versión 15
+    container_name: postgres_container # Nombre del contenedor
+    ports:
+      - "5432:5432" # Expone el puerto de PostgreSQL
+    environment:
+      POSTGRES_USER: user # Usuario predeterminado
+      POSTGRES_PASSWORD: user # Contraseña del usuario
+      POSTGRES_DB: security # Base de datos predeterminada
