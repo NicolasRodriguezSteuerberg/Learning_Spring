@@ -1,21 +1,17 @@
 package com.learning.__security.presentation.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth2")
-@PreAuthorize("denyAll()") // authorizacion por defecto
-public class TestAuthController2 {
+@RequestMapping("/methods")
+public class TestAuthController {
 
     @GetMapping("get")
-    @PreAuthorize("hasAuthority('READ')")
     public String helloGet() {
         return "Hello World - GET";
     }
 
     @PostMapping("post")
-    @PreAuthorize("hasAuthority('CREATE') or hasAuthority('READ')")
     public String helloPost() {
         return "Hello World - Post";
     }
@@ -31,8 +27,8 @@ public class TestAuthController2 {
     }
 
     @PatchMapping("patch")
-    @PreAuthorize("hasAuthority('REFACTOR')")
     public String helloPatch() {
         return "Hello World - Patch";
     }
 }
+

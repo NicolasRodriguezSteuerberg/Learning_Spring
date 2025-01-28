@@ -1,5 +1,6 @@
 package com.learning.__security.configuration.security;
 
+import com.learning.__security.service.implementation.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -27,6 +30,8 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    // controller 1
 //    @Bean
 //    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
 //        return httpSecurity
@@ -45,12 +50,32 @@ public class SecurityConfig {
 //                .build();
 //    }
 
+    /* controller 2
     @Bean
     public SecurityFilterChain securityFilterChain2 (HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(e -> e.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
+    }
+     */
+
+    @Bean
+    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .csrf(e -> e.disable())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(e -> e
+                                .requestMatchers(HttpMethod.GET, "/auth3/get").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth3/post").hasAnyAuthority("CREATE", "READ")
+                                .requestMatchers(HttpMethod.PATCH, "/auth3/patch").hasAnyRole("ADMIN", "DEVELOPER")
+                                .requestMatchers(HttpMethod.DELETE, "/auth3/delete").hasRole("ADMIN")
+                                // configurar resto endpoints
+                                .anyRequest().authenticated()
+                        //.anyRequest().denyAll()
+                )
                 .build();
     }
 
@@ -60,10 +85,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(UserDetailServiceImpl userDetailService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsServiceList());
+        // provider.setUserDetailsService(userDetailsServiceList()); <-- inmemory
+        provider.setUserDetailsService(userDetailService);
         return provider;
     }
 
@@ -81,7 +107,7 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(userDetails);
     }
      */
-    @Bean
+    /*@Bean
     public UserDetailsService userDetailsServiceList() {
         List<UserDetails> userDetailsList = new ArrayList<>();
         userDetailsList.add(
@@ -102,11 +128,14 @@ public class SecurityConfig {
         );
         return new InMemoryUserDetailsManager(userDetailsList);
     }
+     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         // solo para pruebas
-        return NoOpPasswordEncoder.getInstance();
+        //return NoOpPasswordEncoder.getInstance();
         //return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+        return new BCryptPasswordEncoder();
     }
+
 }
